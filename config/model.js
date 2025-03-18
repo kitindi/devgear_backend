@@ -17,6 +17,37 @@ const UserSchema = new Schema({
   },
 });
 
+const ProductSchema = new Schema(
+  {
+    product_name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Schema.Types.Decimal128,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
+    sale: {
+      type: Boolean,
+      default: false,
+    },
+    discount: {
+      type: Number,
+    },
+  },
+  { timestamps: true }
+);
+
+// product categories
+
+const Product = mongoose.model("Product", ProductSchema);
 const User = mongoose.model("User", UserSchema);
 
-export default User;
+export { Product, User };
