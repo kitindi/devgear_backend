@@ -5,9 +5,10 @@ import jwt from "jsonwebtoken";
 import cors from "cors";
 import "dotenv/config";
 import { connectDB } from "./config/dbconnect.js";
-import { User, Product } from "./config/model.js";
+import { User, Product, Category } from "./config/model.js";
 import { upload } from "./config/multer.js";
 import { fileURLToPath } from "url";
+import sellerRouter from "./router/sellerRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,7 +72,7 @@ app.post("/api/auth/user-login", async (req, res) => {
   const userPassword = password.trim();
   const userEmail = email.trim();
 
-  // check of user is registered
+  // check of user / Customer get registered
 
   const user = await User.findOne({ email: userEmail });
   if (!user) {
@@ -89,6 +90,65 @@ app.post("/api/auth/user-login", async (req, res) => {
   const tokenValue = jwt.sign({ username: user.name }, process.env.JWT_SECRET);
   // If credentials are valid
   res.json({ token: tokenValue });
+});
+
+/* SELLER API ENDPOINTS */
+
+app.use("/api/seller", sellerRouter);
+
+// PRODUCT CATEGORY API ENDPOINTS
+// POST - create product category
+app.post("/api/category", async (req, res) => {
+  const { name, description } = req.body;
+  try {
+    const newCategory = new Category({
+      name,
+      description,
+    });
+    const savedCategory = await newCategory.save();
+    res.status(201).json(savedCategory);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+// GET - get all product categories
+app.get("/api/category", async (req, res) => {
+  try {
+    const categories = await Category.find({});
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Edit product category
+app.post("/api/category/:id", async (req, res) => {
+  const { name, description } = req.body;
+  const categoryId = req.params.id;
+
+  try {
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, { name, description }, { new: true });
+    if (!updatedCategory) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.json(updatedCategory);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+// Delete product category
+app.delete("/api/category/:id", async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const deletedCategory = await Category.findByIdAndDelete(categoryId);
+    if (!deletedCategory) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.json({ message: "Category deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 });
 
 // Products api end points
@@ -124,6 +184,7 @@ app.post("/api/product", (req, res) => {
   });
 });
 
+// Get All the products
 app.get("/api/product", async (req, res) => {
   try {
     const products = await Product.find({});

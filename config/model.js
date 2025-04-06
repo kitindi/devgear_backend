@@ -27,6 +27,11 @@ const ProductSchema = new Schema(
       type: String,
       required: true,
     },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
     price: {
       type: Schema.Types.Decimal128,
       required: true,
@@ -47,7 +52,20 @@ const ProductSchema = new Schema(
 
 // product categories
 
-const Product = mongoose.model("Product", ProductSchema);
-const User = mongoose.model("User", UserSchema);
+const CategorySchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
 
-export { Product, User };
+const Category = mongoose.model.Category || mongoose.model("Category", CategorySchema);
+
+const Product = mongoose.model.Product || mongoose.model("Product", ProductSchema);
+const User = mongoose.model.User || mongoose.model("User", UserSchema);
+
+export { Product, User, Category };
