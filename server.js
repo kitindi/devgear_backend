@@ -41,7 +41,7 @@ app.use("/product_images", express.static(path.join(__dirname, "public/product_i
 
 // user authentication api end points
 
-// POST - create user
+// POST - create customer
 app.post("/api/auth/user-register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -66,7 +66,7 @@ app.post("/api/auth/user-register", async (req, res) => {
   }
 });
 
-// POST - login user
+// POST - login customer
 app.post("/api/auth/user-login", async (req, res) => {
   const { email, password } = req.body;
   const userPassword = password.trim();
@@ -169,6 +169,7 @@ app.post("/api/product", (req, res) => {
       const newProduct = new Product({
         product_name: req.body.product_name,
         description: req.body.description,
+        category: req.body.category, // Ensure categories is an array of ObjectId references
         price: parseFloat(req.body.price), // Ensure price is a number
         image: `/product_images/${req.file.filename}`,
         sale: req.body.sale === "true", // Convert to boolean if needed

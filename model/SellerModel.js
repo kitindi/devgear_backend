@@ -22,6 +22,10 @@ const sellerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    default: "seller",
+  },
 });
 
 const Seller = mongoose.model.Seller || mongoose.model("Seller", sellerSchema);

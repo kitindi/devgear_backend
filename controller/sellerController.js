@@ -4,7 +4,9 @@ import "dotenv/config";
 import Seller from "../model/SellerModel.js";
 
 export const registerSeller = async (req, res) => {
-  const { name, email, password, phone_number, address } = req.body;
+  const { name, email, password, phone_number, address, role } = req.body;
+  console.log(name, email, password, phone_number, address, role);
+  // check if user is registered
 
   try {
     const sellerExists = await Seller.findOne({ email });
@@ -14,7 +16,8 @@ export const registerSeller = async (req, res) => {
     }
 
     // Validate the input fields
-    if (!name || !email || !password || !phone_number || !address) {
+
+    if (!name || !email || !password || !phone_number || !address || !role) {
       return res.status(400).json({ message: "Please fill all fields" });
     }
     if (password.length < 6) {
@@ -34,6 +37,7 @@ export const registerSeller = async (req, res) => {
       password: hashPassword,
       phone_number,
       address,
+      role: role || "seller",
     });
 
     return res.status(201).json({ message: "Seller registered successfully" });
@@ -41,6 +45,8 @@ export const registerSeller = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// Seller login
 
 export const loginSeller = async (req, res) => {
   const { email, password } = req.body;
@@ -69,3 +75,7 @@ export const loginSeller = async (req, res) => {
   // If credentials are valid
   res.json({ token: tokenValue });
 };
+
+// Seller logout
+
+const sellerLogout = async (req, res) => {};
