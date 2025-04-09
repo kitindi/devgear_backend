@@ -31,6 +31,10 @@ const ProductSchema = new Schema(
       ref: "Category",
       required: true,
     },
+    inStock: {
+      type: Number,
+      default: 0,
+    },
     price: {
       type: Schema.Types.Decimal128,
       required: true,

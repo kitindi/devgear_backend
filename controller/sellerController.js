@@ -69,7 +69,7 @@ export const loginSeller = async (req, res) => {
   }
 
   // generate token
-  const tokenValue = jwt.sign({ username: seller.name }, process.env.JWT_SECRET, {
+  const tokenValue = jwt.sign({ name: seller.name, role: seller.role }, process.env.JWT_SECRET, {
     expiresIn: "3h",
   });
   // If credentials are valid
@@ -77,5 +77,3 @@ export const loginSeller = async (req, res) => {
 };
 
 // Seller logout
-
-const sellerLogout = async (req, res) => {};

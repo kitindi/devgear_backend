@@ -87,7 +87,7 @@ app.post("/api/auth/user-login", async (req, res) => {
   }
 
   // generate token
-  const tokenValue = jwt.sign({ username: user.name }, process.env.JWT_SECRET);
+  const tokenValue = jwt.sign({ name: user.name, role: "" }, process.env.JWT_SECRET);
   // If credentials are valid
   res.json({ token: tokenValue });
 });
@@ -169,7 +169,8 @@ app.post("/api/product", (req, res) => {
       const newProduct = new Product({
         product_name: req.body.product_name,
         description: req.body.description,
-        category: req.body.category, // Ensure categories is an array of ObjectId references
+        category: req.body.category,
+        inStock: req.body.inStock, // Ensure categories is an array of ObjectId references
         price: parseFloat(req.body.price), // Ensure price is a number
         image: `/product_images/${req.file.filename}`,
         sale: req.body.sale === "true", // Convert to boolean if needed
